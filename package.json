@@ -4,7 +4,6 @@
   "description": "Attempting to convert BGRA to YUV422 on the GPU using Javascript.",
   "main": "index.js",
   "dependencies": {
-    "@rezonant/macadam": "git+https://github.com/rezonant/macadam.git",
     "gpu.js": "^2.9.3",
     "nodemon": "^2.0.3"
   },

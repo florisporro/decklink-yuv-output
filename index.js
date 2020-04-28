@@ -1,20 +1,6 @@
-const macadam = require("@rezonant/macadam")
 const fs = require("fs")
 
-let playback;
-
-async function initializePlayback() {
-    if (!playback) {
-        playback = await macadam.playback({
-            deviceIndex: 0,
-            displayMode: macadam.bmdModeHD1080i50,
-            pixelFormat: macadam.bmdFormat8BitYUV
-            // pixelFormat: macadam.bmdFormat10BitYUV
-            // pixelFormat: macadam.bmdFormat8BitRGB
-            // pixelFormat: macadam.bmdFormat8BitBGRA
-        });
-    }
-}
+const convertBGRAToYUV4228bit = require("./converters/convertBGRAtoYUV4228bit")
 
 function timer(t) {
 return new Promise((f, r) => {
@@ -23,16 +9,20 @@ return new Promise((f, r) => {
 }
 
 async function startPlayback() {
-    await initializePlayback()
+    // Normally frames would be provided at 60hz by Electron rendering BGRA output from an HTML page
+    // Instead of this we provide a BGRA bitmap from file
     const rgbabitmap = fs.readFileSync("bgrabitmap.bmp")
+    
+    for ( let x = 0 ; x < 10 ; x++ ) {
+        
+        // Insert magic here to convert BGRA to YUV using the GPU:
+        const yuv = convertBGRAToYUV4228bit(1920, 1080, rgbabitmap)
+        
+        // Now check if the output matches what we are expecting to receive
+        const expected_output = fs.readFileSync("convertedToYUV4228bit.bmp")
+        console.log(Buffer.compare(yuv, expected_output) ? "Conversion unsuccesful" : "Correct!")
 
-    // Insert magic here to go to YUV, ideally with gpu
-    const yuv = Buffer.alloc(1920 * 1080 * 3)
-
-    for ( let x = 0 ; x < 500 ; x++ ) {
-        // Display for 500 frames then quit
-        await playback.displayFrame(yuv);
-        await timer(1000/50);
+        await timer(200);
     }
 }
 
