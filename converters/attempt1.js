@@ -20,7 +20,8 @@ function convertBGRAToYUV4228bit (width, height, data) {
     const KGoKRi = KG / KRi * HalfCbCrRange
 
     const buffer = Buffer.alloc(width * height * 2) // for every pixels I need 2 bytes
-    for (let i = 0; i < width * (height - 30) * 4; i += 8) { // read the input in steps of 2 pixels
+    let yuvi = 0
+    for (let i = 0; i < width * (height) * 4; i += 8) { // read the input in steps of 2 pixels
         // pixel1:
         const b1 = data[i + 0] || 0
         const g1 = data[i + 1] || 0
