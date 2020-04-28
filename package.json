@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@rezonant/macadam": "git+https://github.com/rezonant/macadam.git",
+    "beamcoder": "^0.5.2",
     "gpu.js": "^2.9.3",
     "nodemon": "^2.0.3"
   },
